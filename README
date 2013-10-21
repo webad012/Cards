@@ -1,0 +1,7 @@
+README
+
+Cards working game
+
+find and eliminate the same
+but only if they are next to each other (up, down, left or right)
+if not, switch cards places to get it next to its pair
