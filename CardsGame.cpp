@@ -33,6 +33,8 @@ CardsGame::CardsGame()
     fieldBorderSize = 2;
 
     numOfCards = 25;
+
+
     numOfFacedUp = 0;
 
     numOfCardsPerRow = ceil( sqrt(numOfCards) );

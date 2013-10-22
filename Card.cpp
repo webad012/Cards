@@ -42,7 +42,7 @@ void Card::HandleRightMouseClick(SDL_Event e)
 
 void Card::handle_rendering(SDL_Surface *screen)
 {
-    if(removed == false)
+    if(removed == true)
     {
         rectangleRGBA(screen, cardRect.x, cardRect.y, cardRect.x + cardRect.w, cardRect.y + cardRect.h, 0x00, 0x00, 0x00, 0xFF);
     }
@@ -163,7 +163,12 @@ void Card::SetCoordJ(int j)
     coordj = j;
 }
 
-
+void Card::Remove()
+{
+    removed = true;
+    facedUp = false;
+    chosen = false;
+}
 
 
 

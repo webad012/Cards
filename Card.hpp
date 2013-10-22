@@ -40,6 +40,8 @@ public:
     void SetCoordJ(int);
     void SetRect(SDL_Rect);
 
+    void Remove();
+
 private:
     SDL_Rect cardRect;
     int cardNum;
