@@ -36,16 +36,20 @@ public:
 
     bool CloseForAction(Card*);
 
+    bool IsHole();
+    void SetHole();
+
     void SetCoordI(int);
     void SetCoordJ(int);
     void SetRect(SDL_Rect);
 
     void Remove();
+    bool IsRemoved();
 
 private:
     SDL_Rect cardRect;
     int cardNum;
-    bool facedUp, chosen, removed;
+    bool facedUp, chosen, removed, hole;
 
     SDL_Surface *cardNumSurface;
     SDL_Color colorBlack;

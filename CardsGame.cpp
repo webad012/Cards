@@ -32,8 +32,8 @@ CardsGame::CardsGame()
 
     fieldBorderSize = 2;
 
-    numOfCards = 25;
-
+    numOfCards = 12;
+    numOfHoles = ceil(numOfCards/3);
 
     numOfFacedUp = 0;
 
@@ -65,6 +65,18 @@ CardsGame::CardsGame()
 
             cards.push_back( new Card(rand_nums.back(), cardRect, i, j) );
             rand_nums.pop_back();
+        }
+    }
+
+    int num_of_holes_left = numOfHoles;
+    while(num_of_holes_left>0)
+    {
+        int rnd = rand() % numOfCards;
+
+        if( cards[rnd]->IsHole() == false )
+        {
+            cards[rnd]->SetHole();
+            num_of_holes_left--;
         }
     }
 

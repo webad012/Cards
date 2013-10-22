@@ -44,20 +44,26 @@ void Card::handle_rendering(SDL_Surface *screen)
 {
     if(removed == true)
     {
-        rectangleRGBA(screen, cardRect.x, cardRect.y, cardRect.x + cardRect.w, cardRect.y + cardRect.h, 0x00, 0x00, 0x00, 0xFF);
+        if(hole == true)
+        {
+            SDL_FillRect(screen, &cardRect, SDL_MapRGB(screen->format, 0x00, 0x00, 0x00));
+        }
+        else
+        {
+            rectangleRGBA(screen, cardRect.x, cardRect.y, cardRect.x + cardRect.w, cardRect.y + cardRect.h, 0x00, 0x00, 0x00, 0xFF);
+        }
     }
     else
     {
         if(facedUp == false)
         {
-            SDL_FillRect(screen, &cardRect, SDL_MapRGB(screen->format, 0x00, 0x00, 0x00));
+            SDL_FillRect(screen, &cardRect, SDL_MapRGB(screen->format, 0x00, 0x00, 0x6D));
             rectangleRGBA(screen, cardRect.x + 3, cardRect.y + 3, cardRect.x + cardRect.w - 3, cardRect.y + cardRect.h - 3, 0xFF, 0xFF, 0xFF, 0xFF);
         }
         else if(facedUp == true)
         {
-            SDL_FillRect(screen, &cardRect, SDL_MapRGB(screen->format, 0xDD, 0xDD, 0xDD));
+            SDL_FillRect(screen, &cardRect, SDL_MapRGB(screen->format, 0xCC, 0xCC, 0xCC));
             rectangleRGBA(screen, cardRect.x + 3, cardRect.y + 3, cardRect.x + cardRect.w - 3, cardRect.y + cardRect.h - 3, 0x00, 0x00, 0x00, 0xFF);
-
             SDL_Rect cardNumOffset;
             cardNumOffset.x = cardRect.x; // + (cardNumSurface->w)/2;
             cardNumOffset.y = cardRect.y; // + (cardNumSurface->h)/2;
@@ -106,10 +112,21 @@ bool Card::CloseForAction(Card *c)
     if( ((coordi == c->GetCoordI()) && (abs( coordj - c->GetCoordJ() ) == 1))
        || ((coordj== c->GetCoordJ()) && (abs( coordi - c->GetCoordI() ) == 1)) )
     {
+        if( (removed == true && hole == true)
+           || (c->IsRemoved() == true && c->IsHole() == true) )
+        {
+           return false;
+        }
+
         return true;
     }
 
     return false;
+}
+
+bool Card::IsRemoved()
+{
+    return removed;
 }
 
 bool Card::GetChosen()
@@ -168,6 +185,16 @@ void Card::Remove()
     removed = true;
     facedUp = false;
     chosen = false;
+}
+
+bool Card::IsHole()
+{
+    return hole;
+}
+
+void Card::SetHole()
+{
+    hole = true;
 }
 
 

@@ -5,3 +5,4 @@ Cards working game
 find and eliminate the same
 but only if they are next to each other (up, down, left or right)
 if not, switch cards places to get it next to its pair
+holes apear after card is removed and cannot change place

@@ -37,6 +37,7 @@ private:
 
     int numOfCardsPerRow;
     int numOfCardsPerColumn;
+    int numOfHoles;
 };
 
 #endif
