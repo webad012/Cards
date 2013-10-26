@@ -3,12 +3,12 @@
 
 #include <SDL/SDL.h>
 #include <string>
-#include <SDL/SDL_gfxPrimitives.h>
-#include <iostream>
-#include <vector>
-#include <algorithm>
+#include <SDL/SDL_ttf.h>
 
-#include "Card.hpp"
+#include "GameWindow.hpp"
+#include "StartWindow.hpp"
+#include "ChooseWindow.hpp"
+#include "PlayWindow.hpp"
 
 class CardsGame
 {
@@ -21,23 +21,11 @@ public:
     void handle_rendering();
 
 private:
-    SDL_Surface *screen;
-    SDL_Event event;
+//    GameWindow::GameState _game_state;
 
-    SDL_Rect fieldBorderRect;
-    SDL_Color fieldBorderColor;
-    int fieldBorderSize;
+    GameWindow *gameWindow;
 
-    void DrawRectangle(SDL_Rect rect, SDL_Surface *destination, int bodersize, SDL_Color bordercolor);
-
-    std::vector<Card*> cards;
-    int numOfCards;
-    int numOfFacedUp;
-    Uint32 start_time, flip_time;
-
-    int numOfCardsPerRow;
-    int numOfCardsPerColumn;
-    int numOfHoles;
+//    StartWindow *_start_window;
+//    ChooseWindow *_choose_window;
 };
-
 #endif

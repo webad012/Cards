@@ -41,11 +41,11 @@ int main()
     }
     catch(std::string s)
     {
-        std::cout << "STRING EXCEPTION - main - " << s << std::endl;;
+        std::cout << "STRING EXCEPTION - " << s << std::endl;;
     }
     catch(std::exception &e)
     {
-        std::cout << "UNHANDLED EXCEPTION - main - " << e.what() << std::endl;
+        std::cout << "UNHANDLED EXCEPTION - " << e.what() << std::endl;
     }
 
     return 1;

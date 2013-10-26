@@ -7,10 +7,10 @@ Card::Card(int num, SDL_Rect rect, int i, int j)
     colorBlack.g = 0;
     colorBlack.b = 0;
 
-    cardNumFont = TTF_OpenFont( "CardNumFont.ttf", cardRect.h*3/5 );
+    cardNumFont = TTF_OpenFont( "CardsFont.ttf", cardRect.h*3/5 );
     if( cardNumFont == NULL )
     {
-        throw std::string("cardNumFont problem - " + std::string(TTF_GetError()));
+        throw std::string("Card::Card - cardNumFont problem - " + std::string(TTF_GetError()));
     }
 
     std::stringstream ss;
@@ -26,18 +26,12 @@ Card::~Card()
 
 void Card::HandleLeftMouseClick(SDL_Event e)
 {
-    if( ( e.button.x > cardRect.x ) && ( e.button.x< cardRect.x + cardRect.w ) && ( e.button.y > cardRect.y ) && ( e.button.y < cardRect.y + cardRect.h ) )
-    {
-        facedUp = true;
-    }
+    facedUp = true;
 }
 
 void Card::HandleRightMouseClick(SDL_Event e)
 {
-    if( ( e.button.x > cardRect.x ) && ( e.button.x< cardRect.x + cardRect.w ) && ( e.button.y > cardRect.y ) && ( e.button.y < cardRect.y + cardRect.h ) )
-    {
-        chosen = true;
-    }
+    chosen = true;
 }
 
 void Card::handle_rendering(SDL_Surface *screen)

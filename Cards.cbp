@@ -30,6 +30,19 @@
 		<Unit filename="Card.hpp" />
 		<Unit filename="CardsGame.cpp" />
 		<Unit filename="CardsGame.hpp" />
+		<Unit filename="ChooseWindow.cpp" />
+		<Unit filename="ChooseWindow.hpp" />
+		<Unit filename="GameField.cpp" />
+		<Unit filename="GameField.hpp" />
+		<Unit filename="GameWindow.cpp" />
+		<Unit filename="GameWindow.hpp" />
+		<Unit filename="PlayWindow.cpp" />
+		<Unit filename="PlayWindow.hpp" />
+		<Unit filename="StartWindow.cpp" />
+		<Unit filename="StartWindow.cpp/" />
+		<Unit filename="StartWindow.hpp" />
+		<Unit filename="StatusBar.cpp" />
+		<Unit filename="StatusBar.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
