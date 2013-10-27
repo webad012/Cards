@@ -1,11 +1,11 @@
 #include "GameField.hpp"
 
-GameField::GameField(SDL_Surface *screen, int statusBarHeight)
-: numberOfMoves(0)
+GameField::GameField(SDL_Surface *screen, int statusBarWidth, int cardNum, int movesNum)
+: numOfCards(cardNum), numberOfMoves(movesNum), levelDone(false)
 {
     fieldRect.x = 0;
-    fieldRect.y = statusBarHeight;
-    fieldRect.w = screen->w;
+    fieldRect.y = 0;
+    fieldRect.w = screen->w - statusBarWidth;
     fieldRect.h = screen->h;
 
     fieldBorderRect.x = fieldRect.x + 20;
@@ -25,7 +25,6 @@ GameField::GameField(SDL_Surface *screen, int statusBarHeight)
 
     fieldBorderSize = 2;
 
-    numOfCards = 12;
     int numOfHoles = ceil(numOfCards/3);
 
     numOfFacedUp = 0;
@@ -76,7 +75,7 @@ GameField::GameField(SDL_Surface *screen, int statusBarHeight)
     flip_time = 1000;
 
     /// game done part initialization
-    gameDoneSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_ANYFORMAT, screen->w, screen->h, screen->format->BitsPerPixel, 0, 0, 0, 0);
+    gameDoneSurface = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_ANYFORMAT, fieldRect.w, fieldRect.h, screen->format->BitsPerPixel, 0, 0, 0, 0);
     if( gameDoneSurface == NULL )
     {
         throw std::string(" - GameField::GameField - gameDoneSurface problem");
@@ -109,9 +108,6 @@ GameField::~GameField()
 
     SDL_FreeSurface(gameDoneSurface);
     SDL_FreeSurface(restartFontSurface);
-
-    TTF_Quit();
-    SDL_Quit();
 }
 
 void GameField::handle_events(SDL_Event event)
@@ -222,6 +218,29 @@ void GameField::handle_logic(bool *gameDone, int *movesNum)
             if( cards[ chosen_positions[0] ]->CloseForAction( cards[ chosen_positions[1] ] ) == true )
             {
                 cards[ chosen_positions[0] ]->Swap( cards[ chosen_positions[1] ] );
+
+                std::vector<Card*> tempcards;
+                for(int i=0; i<numOfCards; i++)
+                {
+                   if( i == chosen_positions[0] )
+                   {
+                       tempcards.push_back(cards[ chosen_positions[1] ]);
+                   }
+                   else if( i == chosen_positions[1] )
+                   {
+                       tempcards.push_back(cards[ chosen_positions[0] ]);
+                   }
+                   else
+                   {
+                       tempcards.push_back(cards[ i ]);
+                   }
+                }
+
+                for(int i=0; i<numOfCards; i++)
+                {
+                   cards[i] = tempcards[i];
+                }
+
                 numberOfMoves++;
             }
             else
@@ -234,7 +253,7 @@ void GameField::handle_logic(bool *gameDone, int *movesNum)
         }
     }
 
-    /// logic for game done
+    /// logic for level done
     {
         int num_of_removed = 0;
         for(std::vector<Card*>::iterator it = cards.begin(); it != cards.end(); it++)
@@ -247,7 +266,29 @@ void GameField::handle_logic(bool *gameDone, int *movesNum)
 
         if(numOfCards == num_of_removed)
         {
-            *gameDone = true;
+            levelDone = true;
+        }
+    }
+
+    /// logic for game done
+    {
+        int numOfCardsPerRow = ceil( sqrt(numOfCards) );
+
+        for(int i=0; i<numOfCards; i++)
+        {
+           if( cards[i]->IsRemoved() == false )
+           {
+               for(int j=i+1; j<numOfCards; j++)
+               {
+                   if( cards[i]->GetNum() == cards[j]->GetNum() )
+                   {
+                       if( !PathExist(cards[i]->GetCoordJ()*numOfCardsPerRow+cards[i]->GetCoordI(), cards[j]->GetCoordJ()*numOfCardsPerRow+cards[j]->GetCoordI()) )
+                       {
+                           *gameDone = true;
+                       }
+                   }
+               }
+           }
         }
     }
 
@@ -292,5 +333,135 @@ void GameField::handle_rendering(bool gameDone, SDL_Surface *screen)
         throw std::string("flip problem");
     }
 }
+
+bool GameField::LevelPassed()
+{
+    return levelDone;
+}
+
+bool GameField::PathExist(int c1, int c2)
+{
+    int numOfCardsPerRow = ceil( sqrt(numOfCards) );
+    int numOfCardsPerColumn = floor( sqrt(numOfCards) );
+
+    // Mark all the vertices as not visited
+    bool *visited = new bool[numOfCards];
+    for(int i=0; i<numOfCards; i++)
+    {
+        visited[i] = false;
+    }
+
+    // Create a queue for BFS
+    std::list<int> queue;
+
+    // Mark the current node as visited and enqueue it
+    visited[c1] = true;
+    queue.push_back(c1);
+
+
+    while (!queue.empty())
+    {
+        // Dequeue a vertex from queue and print it
+        int s = queue.front();
+        queue.pop_front();
+
+
+        int topi, topj, bottomi, bottomj, lefti, leftj, righti, rightj;
+
+        topi = cards[s]->GetCoordI();
+        topj = cards[s]->GetCoordJ()-1;
+
+        bottomi = cards[s]->GetCoordI();
+        bottomj = cards[s]->GetCoordJ()+1;
+
+        lefti = cards[s]->GetCoordI()-1;
+        leftj = cards[s]->GetCoordJ();
+
+        righti = cards[s]->GetCoordI()+1;
+        rightj = cards[s]->GetCoordJ();
+
+        if( topj >= 0 )
+        {
+            int loc = topj*numOfCardsPerRow + topi;
+
+            if(loc == c2)
+            {
+                return true;
+            }
+            else if (!visited[loc] && (!cards[loc]->IsRemoved() || !cards[loc]->IsHole()) )
+            {
+                visited[loc] = true;
+                queue.push_back(loc);
+            }
+        }
+
+        if( bottomj <= numOfCardsPerColumn-1 )
+        {
+            int loc = bottomj*numOfCardsPerRow + bottomi;
+
+            if(loc == c2)
+            {
+                return true;
+            }
+            else if(!visited[loc] && (!cards[loc]->IsRemoved() || !cards[loc]->IsHole()) )
+            {
+                visited[loc] = true;
+                queue.push_back(loc);
+            }
+        }
+
+        if( lefti >= 0 )
+        {
+            int loc = leftj*numOfCardsPerRow + lefti;
+
+            if(loc == c2)
+            {
+                return true;
+            }
+            else if(!visited[loc] && (!cards[loc]->IsRemoved() || !cards[loc]->IsHole()) )
+            {
+                visited[loc] = true;
+                queue.push_back(loc);
+            }
+        }
+
+        if( righti <= numOfCardsPerRow-1 )
+        {
+            int loc = rightj*numOfCardsPerRow + righti;
+
+            if(loc == c2)
+            {
+                return true;
+            }
+            else if(!visited[loc] && (!cards[loc]->IsRemoved() || !cards[loc]->IsHole()) )
+            {
+                visited[loc] = true;
+                queue.push_back(loc);
+            }
+        }
+    }
+
+    for(int j=0; j<numOfCardsPerColumn; j++)
+    {
+        for(int i=0; i < numOfCardsPerRow; i++)
+        {
+            if(cards[j*numOfCardsPerRow + i]->IsRemoved())
+            {
+                std::cout << "NULL";
+            }
+            else
+            {
+                std::cout << cards[j*numOfCardsPerRow + i]->GetNum();
+            }
+
+            std::cout << " ";
+        }
+        std::cout << std::endl;
+    }
+    return false;
+}
+
+
+
 
 

@@ -56,49 +56,9 @@ void CardsGame::handle_logic()
     }
 
     gameWindow->handle_logic();
-//    if( _game_state == GameWindow::GS_StartState )
-//    {
-//        _start_window->handle_logic();
-//    }
-////    else if( _game_state == GameWindow::GS_ChooseState )
-//    {
-//        _choose_window->handle_logic();
-//    }
-//    else if( (_game_state == GameWindow::GS_PlayStatePvP) || (_game_state == GameWindow::GS_PlayStatePvA) )
-//    {
-//        if(_play_window->GetState() == GameWindow::GS_PlayState)
-//        {
-//            _play_window->SetState(_game_state);
-//
-//            if(_game_state == GameWindow::GS_PlayStatePvA)
-//            {
-//                _play_window->SetAIDifficulty( _choose_window->GetAIDiffictulty() );
-//            }
-//        }
-//
-//        _play_window->handle_logic();
-//    }
-//    else if( _game_state == GameWindow::GS_EndGame )
-//    {
-//        delete _play_window;
-//        _play_window = new PlayWindow();
-//        _game_state = GameWindow::GS_ChooseState;
-//    }
 }
 
 void CardsGame::handle_rendering()
 {
     gameWindow->handle_rendering();
-//    if( _game_state == GameWindow::GS_StartState )
-//    {
-//        _start_window->handle_rendering();
-//    }
-//    else if( _game_state == GameWindow::GS_ChooseState )
-//    {
-//        _choose_window->handle_rendering();
-//    }
-//    else if( (_game_state == GameWindow::GS_PlayStatePvP) || (_game_state == GameWindow::GS_PlayStatePvA) )
-//    {
-//        _play_window->handle_rendering();
-//    }
 }

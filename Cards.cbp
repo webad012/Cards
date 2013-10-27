@@ -7,6 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Release">
+				<Option platforms="Unix;" />
 				<Option output="bin/Release/Cards" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
@@ -39,7 +40,6 @@
 		<Unit filename="PlayWindow.cpp" />
 		<Unit filename="PlayWindow.hpp" />
 		<Unit filename="StartWindow.cpp" />
-		<Unit filename="StartWindow.cpp/" />
 		<Unit filename="StartWindow.hpp" />
 		<Unit filename="StatusBar.cpp" />
 		<Unit filename="StatusBar.hpp" />

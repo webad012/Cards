@@ -1,11 +1,12 @@
 #include "StatusBar.hpp"
 
-StatusBar::StatusBar(SDL_Surface* screen, int height)
+StatusBar::StatusBar(SDL_Surface* screen, int width, int levelNum, int movenum)
+: movesNum(movenum)
 {
-    statusRect.x = 0;
+    statusRect.x = screen->w - width;
     statusRect.y = 0;
-    statusRect.w = screen->w;
-    statusRect.h = height;
+    statusRect.w = width;
+    statusRect.h = screen->h;
 
     statusFont = TTF_OpenFont( "CardsFont.ttf", 20 );
     if( statusFont == NULL )
@@ -18,44 +19,43 @@ StatusBar::StatusBar(SDL_Surface* screen, int height)
     textColorBlack.b = 0;
     textColorBlack.unused = 0;
 
-    movesNum = 0;
+    std::stringstream messageSS;
 
-    messageSS << "Broj poteza: " << movesNum;
-    messageSurface = TTF_RenderUTF8_Blended(statusFont, messageSS.str().c_str(), textColorBlack);
-    messageSurfaceOffset.x = (statusRect.w - messageSurface->w)/2;
-    messageSurfaceOffset.y = (statusRect.h - messageSurface->h)/2;
+    messageSS << "Nivo: " << levelNum;
+    levelNumSurface = TTF_RenderUTF8_Blended(statusFont, messageSS.str().c_str(), textColorBlack);
+    levelNumSurfaceOffset.x = statusRect.x+5;
+    levelNumSurfaceOffset.y = statusRect.y + 20;
 
-    previous_gamedone_status = true;
+    movesMessageSurface = TTF_RenderUTF8_Blended(statusFont, "Br. poteza", textColorBlack);
+    movesMessageOffset.x = levelNumSurfaceOffset.x;
+    movesMessageOffset.y = levelNumSurfaceOffset.y + levelNumSurface->h + statusRect.h/4;
+
+    messageSS.str("");
+    messageSS.clear();
+    messageSS << movesNum;
+    movesNumSurface = TTF_RenderUTF8_Blended(statusFont, messageSS.str().c_str(), textColorBlack);
+
+    movesNumSurfaceOffset.x = movesMessageOffset.x;
+    movesNumSurfaceOffset.y = movesMessageOffset.y + movesMessageSurface->h;
 }
 
 StatusBar::~StatusBar()
 {
     TTF_CloseFont(statusFont);
-    SDL_FreeSurface(messageSurface);
+    SDL_FreeSurface(movesMessageSurface);
+    SDL_FreeSurface(movesNumSurface);
 }
 
-void StatusBar::handle_logic(bool gameDone, int num)
+void StatusBar::handle_logic(int num)
 {
-    if((gameDone == false) && (num != movesNum))
+    if( num != movesNum )
     {
         movesNum = num;
-        messageSS.str("");
-        messageSS.clear();
-        messageSS << "Broj poteza: " << movesNum;
+        std::stringstream messageSS;
+        messageSS << movesNum;
 
-        SDL_FreeSurface(messageSurface);
-        messageSurface = TTF_RenderUTF8_Solid(statusFont, messageSS.str().c_str(), textColorBlack);
-        previous_gamedone_status = false;
-    }
-    else if((gameDone == true) && (previous_gamedone_status == false))
-    {
-        messageSS.str("");
-        messageSS.clear();
-        messageSS << "Igra završena sa " << num << " poteza.";
-
-        SDL_FreeSurface(messageSurface);
-        messageSurface = TTF_RenderUTF8_Solid(statusFont, messageSS.str().c_str(), textColorBlack);
-        previous_gamedone_status = true;
+        SDL_FreeSurface(movesNumSurface);
+        movesNumSurface = TTF_RenderUTF8_Solid(statusFont, messageSS.str().c_str(), textColorBlack);
     }
 }
 
@@ -63,6 +63,8 @@ void StatusBar::handle_rendering(SDL_Surface *screen)
 {
     SDL_FillRect(screen, &statusRect, 0x888888);
 
-    SDL_BlitSurface(messageSurface, NULL, screen, &messageSurfaceOffset);
+    SDL_BlitSurface(levelNumSurface, NULL, screen, &levelNumSurfaceOffset);
+    SDL_BlitSurface(movesMessageSurface, NULL, screen, &movesMessageOffset);
+    SDL_BlitSurface(movesNumSurface, NULL, screen, &movesNumSurfaceOffset);
 
 }

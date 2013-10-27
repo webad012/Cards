@@ -7,18 +7,21 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <list>
 
 #include "Card.hpp"
 
 class GameField
 {
 public:
-    GameField(SDL_Surface*, int);
+    GameField(SDL_Surface*, int, int, int);
     ~GameField();
 
     void handle_events(SDL_Event);
     void handle_logic(bool*, int*);
     void handle_rendering(bool, SDL_Surface*);
+
+    bool LevelPassed();
 
 private:
     SDL_Rect fieldRect, fieldBorderRect, restartFontRect;
@@ -33,12 +36,15 @@ private:
     Uint32 start_time, flip_time;
 
     int numberOfMoves;
+    bool levelDone;
 
     /// game done part
     SDL_Surface *gameDoneSurface, *restartFontSurface;
     Uint32 gameDoneLastTime, gameDoneBlinkTime;
     bool gameDonePressEnterDraw;
     TTF_Font *restartFont;
+
+    bool PathExist(int, int);
 };
 
 #endif

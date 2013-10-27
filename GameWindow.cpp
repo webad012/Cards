@@ -3,7 +3,7 @@
 
 GameWindow::GameWindow()
 {
-    screen = SDL_SetVideoMode(600, 630, 32, SDL_SWSURFACE );
+    screen = SDL_SetVideoMode(650, 600, 32, SDL_SWSURFACE );
     if( screen == NULL )
     {
         throw std::string(" - GameWindow::GameWindow() - screen init problem");;

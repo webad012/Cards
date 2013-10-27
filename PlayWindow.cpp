@@ -1,12 +1,13 @@
 #include "PlayWindow.hpp"
 
 PlayWindow::PlayWindow()
-: statusBarHeight(30), movesNum(0)
+: currentLevel(1), statusBarWidth(100), movesNum(0), gameDone(false)
 {
     changedState = GameWindow::GS_PlayState;
-    _statusBar = new StatusBar(screen, statusBarHeight);
-    _gameField = new GameField(screen, statusBarHeight);
-    gameDone = false;
+    _statusBar = NULL;
+    _gameField = NULL;
+
+    InitializeLevel(currentLevel);
 }
 
 PlayWindow::~PlayWindow()
@@ -40,13 +41,16 @@ void PlayWindow::handle_events(bool* quit)
 
 void PlayWindow::handle_logic()
 {
-    if(gameDone == true)
+    if(gameDone == false)
     {
-         _statusBar->handle_logic(true, movesNum);
-    }
-    else
-    {
-        _statusBar->handle_logic(false, movesNum);
+        if(_gameField->LevelPassed())
+        {
+            currentLevel++;
+            InitializeLevel( currentLevel );
+        }
+
+        _statusBar->handle_logic(movesNum);
+
         _gameField->handle_logic(&gameDone, &movesNum);
     }
 }
@@ -66,5 +70,45 @@ void PlayWindow::handle_rendering()
 bool PlayWindow::ChangedState()
 {
     return changedState != GameWindow::GS_PlayState;
+}
+
+void PlayWindow::InitializeLevel(int levelNum)
+{
+    std::ifstream levelConfFile;
+    levelConfFile.open("levels.conf");
+    if( !levelConfFile.is_open() )
+    {
+        throw std::string(" - PlayWindow::PlayWindow - problem opening levelConfFile");
+    }
+
+    int level=-1, num=-1;
+
+    while( (!levelConfFile.eof()) && (level != levelNum) )
+    {
+        levelConfFile >> level;
+        levelConfFile >> num;
+    }
+
+    levelConfFile.close();
+
+    if( (level == -1) || (num == -1) )
+    {
+        throw std::string("error reading level info from file");
+    }
+
+    if(_statusBar != NULL)
+    {
+        delete _statusBar;
+        _statusBar = NULL;
+    }
+    _statusBar = new StatusBar(screen, statusBarWidth, level, movesNum);
+
+
+    if(_gameField)
+    {
+        delete _gameField;
+        _gameField = NULL;
+    }
+    _gameField = new GameField(screen, statusBarWidth, num, movesNum);
 }
 
