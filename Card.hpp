@@ -4,6 +4,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_gfxPrimitives.h>
 #include <SDL/SDL_ttf.h>
+#include <SDL/SDL_image.h>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -51,7 +52,7 @@ private:
     int cardNum;
     bool facedUp, chosen, removed, hole;
 
-    SDL_Surface *cardNumSurface;
+    SDL_Surface *cardNumSurface, *cardHoleSurface;
     SDL_Color colorBlack;
     TTF_Font *cardNumFont;
     int coordi, coordj;

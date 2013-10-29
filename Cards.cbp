@@ -20,6 +20,7 @@
 					<Add option="-lSDL" />
 					<Add option="-lSDL_gfx" />
 					<Add option="-lSDL_ttf" />
+					<Add option="-lSDL_image" />
 				</Linker>
 			</Target>
 		</Build>

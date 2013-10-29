@@ -13,6 +13,26 @@ Card::Card(int num, SDL_Rect rect, int i, int j)
         throw std::string("Card::Card - cardNumFont problem - " + std::string(TTF_GetError()));
     }
 
+    SDL_Surface *loadedImage = NULL;
+//    SDL_Surface *tmpSurface = NULL;
+    loadedImage = IMG_Load(  "blackhole.jpg" );
+    if( loadedImage != NULL )
+    {
+        cardHoleSurface = SDL_DisplayFormat( loadedImage );
+        SDL_FreeSurface( loadedImage );
+        if( cardHoleSurface != NULL )
+        {
+            Uint32 colorkey = SDL_MapRGB( cardHoleSurface->format, 0xAA, 0xAA, 0xAA );
+            SDL_SetColorKey( cardHoleSurface, SDL_SRCCOLORKEY, colorkey );
+        }
+    }
+    if(cardHoleSurface == NULL)
+    {
+        throw std::string("Card::Card - cardHoleSurface problem");
+    }
+
+
+
     std::stringstream ss;
     ss << cardNum;
     cardNumSurface = TTF_RenderUTF8_Blended(cardNumFont, ss.str().c_str(), colorBlack);
@@ -40,7 +60,12 @@ void Card::handle_rendering(SDL_Surface *screen)
     {
         if(hole == true)
         {
-            SDL_FillRect(screen, &cardRect, SDL_MapRGB(screen->format, 0x00, 0x00, 0x00));
+            SDL_BlitSurface(cardHoleSurface, NULL, screen, &cardRect);
+//            SDL_BlitSurface(cardHoleSurface, &cardRect, screen, &cardRect);
+//            SDL_FillRect(screen, &cardRect, SDL_MapRGB(screen->format, 0x00, 0x00, 0x00));
+//            lineRGBA(screen, cardRect.x, cardRect.y, cardRect.x+cardRect.w*1/4, cardRect.y+cardRect.h*3/4, 0xCC, 0xCC, 0xCC, 0xCC);
+//            lineRGBA(screen, cardRect.x+cardRect.w*1/4, cardRect.y+cardRect.h*3/4, cardRect.x+cardRect.w*1/6, cardRect.y+cardRect.h, 0xCC, 0xCC, 0xCC, 0xCC);
+//            lineRGBA(screen, cardRect.x+cardRect.w*1/4, cardRect.y+cardRect.h*3/4, cardRect.x+cardRect.w, cardRect.y+cardRect.h*5/6, 0xCC, 0xCC, 0xCC, 0xCC);
         }
         else
         {
